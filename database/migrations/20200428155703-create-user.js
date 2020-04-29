@@ -17,6 +17,16 @@ module.exports = {
       password: {
         type: Sequelize.STRING
       },
+      group_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Groups',
+          key: 'id',
+          as: 'group_id'
+        }
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE

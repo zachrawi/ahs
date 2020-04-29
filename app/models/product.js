@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: 'updated_at',
   });
   Product.associate = function(models) {
-    Product.belongsTo(models.User, {
-      foreignKey: 'user_id',
+    Product.belongsTo(models.Merchant, {
+      foreignKey: 'merchant_id',
       as: 'owner',
     });
   };

@@ -15,7 +15,7 @@ app.get('/user', async (req, res) => {
 });
 
 app.get('/product', async (req, res) => {
-    const user = await User.findByPk(1);
+    const user = await User.findByPk(2);
 
     await Product.create({
         user_id: user.id,
