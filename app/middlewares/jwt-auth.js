@@ -11,6 +11,8 @@ const jwtAuth = (req, res, next) => {
                 const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
                 req.authUser = payload;
+
+                next();
             } catch (e) {
                 console.log('error', e);
 
@@ -31,8 +33,6 @@ const jwtAuth = (req, res, next) => {
             message: 'Need authorization header'
         });
     }
-
-    next();
 };
 
 module.exports = jwtAuth;
