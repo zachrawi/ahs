@@ -23,10 +23,16 @@ exports.login = async (req, res) => {
                 created_at: user.created_at,
                 updated_at: user.updated_at
             };
-            const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
+            const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+                expiresIn: process.env.TOKEN_LIFE_TIME * 1
+            });
+            const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+                expiresIn: '7d'
+            });
             res.send({
                 status: 'success',
-                token: token
+                token: token,
+                refreshToken: refreshToken
             });
         } else {
             res.status(400).send({
@@ -40,6 +46,21 @@ exports.login = async (req, res) => {
             message: 'Email not found'
         });
     }
+};
+
+exports.refreshToken = async (req, res) => {
+    const payload = req.authUser;
+    delete payload.exp;
+    delete payload.iat;
+    console.log(process.env.TOKEN_LIFE_TIME);
+    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: process.env.TOKEN_LIFE_TIME * 1
+    });
+
+    res.send({
+        status: 'success',
+        token: token
+    });
 };
 
 exports.me = (req, res) => {
