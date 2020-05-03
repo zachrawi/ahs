@@ -20,9 +20,12 @@ exports.login = async (req, res) => {
                 id: user.id,
                 name: user.name,
                 email: user.email,
+                group_id: user.group_id,
+                merchant_id: user.merchant_id,
                 created_at: user.created_at,
                 updated_at: user.updated_at
             };
+            console.log(user.dataValues)
             const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
                 expiresIn: process.env.TOKEN_LIFE_TIME * 1
             });
