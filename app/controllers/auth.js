@@ -1,8 +1,9 @@
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const Joi = require('@hapi/joi');
 
-const { User } = require('../models');
+const { User, Group, Merchant } = require('../models');
 
 exports.login = async (req, res) => {
     const email = req.body.email || '';
@@ -73,11 +74,66 @@ exports.me = (req, res) => {
 };
 
 exports.register = async (req, res) => {
+    const schema = Joi.object({
+        name: Joi.string().required(),
+        email: Joi.string().email().required(),
+        password: Joi.string().required(),
+        group_id: Joi.number().required(),
+        merchant_id: Joi.number().required()
+    });
+
+    const {error} = schema.validate(req.body);
+
+    if (error) {
+        return res.status(400)
+            .send({
+                status: 'error',
+                message: error.message
+            });
+    }
+
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
     const group_id = req.body.group_id;
     const merchant_id = req.body.merchant_id;
+
+    // check if email exists
+    const countEmail = await User.count({
+        where: {
+            email
+        }
+    });
+
+    if (countEmail > 0) {
+        return res.status(400)
+            .send({
+                status: 'error',
+                message: 'Email is used'
+            });
+    }
+
+    // check group id
+    const group = await Group.findByPk(group_id);
+
+    if (!group) {
+        return res.status(400)
+            .send({
+                status: 'error',
+                message: 'Invalid group id'
+            });
+    }
+
+    // check merchant id
+    const merchant = await Merchant.findByPk(merchant_id);
+
+    if (!merchant) {
+        return res.status(400)
+            .send({
+                status: 'error',
+                message: 'Invalid merchant id'
+            });
+    }
 
     const user = await User.create({
         name,
