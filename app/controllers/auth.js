@@ -71,3 +71,29 @@ exports.me = (req, res) => {
         data: req.authUser
     });
 };
+
+exports.register = async (req, res) => {
+    const name = req.body.name;
+    const email = req.body.email;
+    const password = req.body.password;
+    const group_id = req.body.group_id;
+    const merchant_id = req.body.merchant_id;
+
+    const user = await User.create({
+        name,
+        email,
+        password: bcrypt.hashSync(password, 8),
+        group_id,
+        merchant_id
+    });
+
+    res.send({
+        status: 'success',
+        data: {
+            name: user.name,
+            email: user.email,
+            group_id: user.group_id,
+            merchant_id: user.merchant_id,
+        },
+    });
+}

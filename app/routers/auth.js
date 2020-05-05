@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post('/login', authController.login);
 router.post('/refresh-token', jwtRefreshAuth, authController.refreshToken);
+router.post('/register', authController.register);
 
 router.get('/me', jwtAuth, authController.me);
 
